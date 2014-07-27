@@ -9,15 +9,12 @@ Elasticsearch 1.2.0+ needs JDK 7, hence dependent jar elasticsearch<version>.jar
 
 Deploying the component
 =======================
-* Create new directory:
-	* cd /tmp
-
 * Get component from GitHub:
 	* git clone https://github.com/sylentprayer/Talend-Components.git OR clone using Github client, OR download zip from https://github.com/sylentprayer/Talend-Components
 	* Get tElasticsearchIndex folder containing component.
 	
 * Copy tElasticsearchIndex directory (talend-components) to Talned plugin:
-	* cp -R /tmp/talend-components/tElasticsearchIndex $TALEND_HOME/plugins/org.talend.designer.components.localprovider_*/components/
+	* Copy tElasticsearchIndex into $TALEND_HOME/plugins/org.talend.designer.components.localprovider_*/components/
 
 * Restart talend or press ctrl+shift+F3
 
