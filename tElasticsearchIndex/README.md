@@ -12,7 +12,7 @@ Deploying the component
 * Create new directory:
 	* cd /tmp
 
-* Get component from Codebreak Git:
+* Get component from GitHub:
 	* git clone https://github.com/sylentprayer/Talend-Components.git OR clone using Github client, OR download zip from https://github.com/sylentprayer/Talend-Components
 	* Get tElasticsearchIndex folder containing component.
 	
