@@ -1,26 +1,11 @@
 Elasticsearch Indexing Talend Custom Component
 ================================================
 <br/>
-Talend Open Sutio is open source ETL tool, supporting 450+ components (read/writre/transorm). Support for most of the databases, file ormats and 
-other data sources, like web service, FTP, SMTP and some NoSQL, HDFS/Hadoop (in Talend BigData). But, no component to work with full text search
-engines like Lucene, Solr or Elasticsearch.
+Often, we need full text search support in our application along with analytics. Having a component will allow indexing created/updated along with data loaded in warehouse. So, I have created a component for indexing (create/update) for Elasticsearch. Elasticsearch, is distributed, open source, full text engine built on top of Lucene. It is well documented, supports REST API over JSON and many other native language API for indexing and querying.
 
-Often, we need full text search support in our application along with analytics. Having a component will allow indexing created/updated along with
-data loaded in warehouse. So, I have created a component for indexing (create/update) for Elasticsearch. Elasticsearch, is distributed, open source,
-full text engine built on top of Lucene. It is well documented, supports REST API over JSON and many other native language API for indexing and querying.
+NOTE: To support add or update, at least one field in schema must be designated as key to identify rows as unique. Multiple columns can be designated as key (in case of composite primary keys).
 
-NOTE: This component is tested with Elasticsearch version 0.90.7. And, to support add or update, at least one field in schema must be designated as key to identify rows as unique. Multiple columns can be designated as key (in case of composite primary keys).
-
-Also need some improvement:
-* UI form for input and tooltips.
-
-* Input for multiple elasticsearch hosts.
-
-* Support for Elasticsearch settings, whichever applied to a transport client.
-
-* Support for error hadling and notification in bulk indexing.
-
-* Support for providing statistics of documents added/updated/deleted ti index.
+Elasticsearch 1.2.0+ needs JDK 7, hence dependent jar elasticsearch<version>.jar has same dependency and need to use JDK 7 in Talend Studio.
 
 Deploying the component
 =======================
@@ -28,14 +13,33 @@ Deploying the component
 	* cd /tmp
 
 * Get component from Codebreak Git:
-	* git clone https://pklalitjha@git.codebreak.com/pklalitjha/talend-components.git
-
+	* git clone https://github.com/sylentprayer/Talend-Components.git OR clone using Github client, OR download zip from https://github.com/sylentprayer/Talend-Components
+	* Get tElasticsearchIndex folder containing component.
+	
 * Copy tElasticsearchIndex directory (talend-components) to Talned plugin:
 	* cp -R /tmp/talend-components/tElasticsearchIndex $TALEND_HOME/plugins/org.talend.designer.components.localprovider_*/components/
 
 * Restart talend or press ctrl+shift+F3
 
+See tutorial for component here http://spring-webservice-2-step-by-step.blogspot.in/2014/01/talend-elasticsearch-indexing-tutorial.html
+
+Download example jobs from https://github.com/sylentprayer/sample-projects/releases
+
 Alternatively you could use any of the components without using git at all. This can be downloaded as zip after official release.
+
+I FACED LOT OF ISSUES IN TALENDFORGE SO MOVED COMPONENT TO GITHUB. TALENDFORGE THROWS ERROR WHILE ADDING COMPONENT AND I TRIED FOR TWO DAYS.
+
+Other component tMustache hosted at http://www.talendforge.org/exchange/index.php?eid=1089&product=tos&action=view
+
+Also need some improvement [write to me if these are useful to you]:
+* Input for multiple elasticsearch hosts.
+
+* Support for Elasticsearch settings, whichever applied to a transport client.
+
+* Support for error hadling and notification in bulk indexing.
+
+* Support for providing statistics of documents added/updated/deleted to index.
+
 
 Other components in pipeline:
 ==============================
