@@ -24,7 +24,9 @@ String cid = node.getUniqueName();
 String esIndex = ElementParameterParser.getValue(node, "__ES_INDEX__");
 String esType = ElementParameterParser.getValue(node, "__ES_TYPE__");
 String esBatchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
-	
+String strVerbose = ElementParameterParser.getValue(node, "__VERBOSE_INDEXING__");
+Boolean verboseConsole = new Boolean(strVerbose);  
+
 List<IMetadataColumn> columns = null;
 List<IMetadataTable> metadatas = node.getMetadataList();
 IMetadataTable metadata = null;
@@ -59,6 +61,7 @@ if(conns!=null){
         }
     }
 }
+
 %>
 
 if(key.isEmpty() && request.size()==1){
@@ -78,5 +81,8 @@ if(bulkRequestsSize<%=cid %> == <%=esBatchSize%>){
     }
     bulkRequest<%=cid %> = esClient<%=cid %>.prepareBulk();	
     bulkRequestsSize<%=cid %> = 0;
-    System.out.println("Indexed requests");
+    
+    if( <%=verboseConsole %> ) {
+    	System.out.println("Indexed requests");
+    }
 }
