@@ -29,13 +29,14 @@ I FACED LOT OF ISSUES IN TALENDFORGE SO MOVED COMPONENT TO GITHUB. TALENDFORGE T
 Other component tMustache hosted at http://www.talendforge.org/exchange/index.php?eid=1089&product=tos&action=view
 
 Also need some improvement [write to me if these are useful to you]:
-* Input for multiple elasticsearch hosts.
+--------------------------------------------------------------------
+* Input for multiple elasticsearch hosts (will be useful in load balancing huge data).
 
 * Support for Elasticsearch settings, whichever applied to a transport client.
 
 * Support for error hadling and notification in bulk indexing.
 
-* Support for providing statistics of documents added/updated/deleted to index.
+* Support for providing statistics of documents added/updated to index.
 
 
 Other components in pipeline:
