@@ -38,6 +38,9 @@ Also need some improvement [write to me if these are useful to you]:
 
 * Support for providing statistics of documents added/updated to index.
 
+ES API reffered in this component:
+http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html
+http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-transport.html
 
 Other components in pipeline:
 ==============================
