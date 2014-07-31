@@ -1,4 +1,4 @@
-tElasticsearchIndexJson
+tElasticsearchIndexMustache
 =======================
 
 See README in tElasticsearchIndex for detailed information on background and setup of Talend ElasticSearch components.
@@ -7,6 +7,5 @@ See README in tElasticsearchIndex for detailed information on background and set
 Description
 ===========
 
-This componenent is an offshoot of the tElasticsearchIndex componenent.  Instead of converting the Talend schema to JSON within the component, this component will take a field already converted into a string and perform bulk indexing into Elasticsearch.
+This componenent is an offshoot of the tElasticsearchIndex componenent.  This uses a Mustache temaplet to form the JSOn string sent to ES for indexing. and perform bulk indexing into Elasticsearch.
 
-Define field that contains JSON string in "Body Field" field.
