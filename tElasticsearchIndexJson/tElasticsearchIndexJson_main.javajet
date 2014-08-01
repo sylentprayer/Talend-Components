@@ -13,20 +13,21 @@
 		java.util.List 
     	java.util.Map		
 	" 
-%>
-String key="";
-String json="";
-<%
+
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-	
+%>
+String key<%=cid %>="";
+String json<%=cid %>="";
+<%
 String esIndex = ElementParameterParser.getValue(node, "__ES_INDEX__");
 String esType = ElementParameterParser.getValue(node, "__ES_TYPE__");
 String esBatchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
-String strVerbose = ElementParameterParser.getValue(node, "__VERBOSE_INDEXING__");
 String bodyField = ElementParameterParser.getValue(node, "__BODYFIELD__");
-Boolean verboseConsole = new Boolean(strVerbose);  
+
+Boolean verboseConsole = new Boolean(ElementParameterParser.getValue(node, "__VERBOSE_INDEXING__"));  
+Boolean dieError = new Boolean(ElementParameterParser.getValue(node, "__DIE_ERROR__"));  
 
 List<IMetadataColumn> columns = null;
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -52,34 +53,32 @@ if(conns!=null){
 				
                 if(column.isKey()){
 				%>
-                	key+=<%=conn.getName()%>.<%=column.getLabel()%>;
+                	key<%=cid %>+=<%=conn.getName()%>.<%=column.getLabel()%>;
 				<%
                 } 
-                if(column.isKey()){
-				%>
-                	json = <%=conn.getName()%>.<%=bodyField%>;
-				<%
-                }   
             }
+            %>
+            	json<%=cid %> = <%=conn.getName()%>.<%=bodyField%>; 
+           <%
         }
     }
 }
 
 %>
 
-if(key.isEmpty()){
+if(key<%=cid %>.isEmpty()){
 	bulkRequest<%=cid %>.add(esClient<%=cid %>.prepareIndex(<%=esIndex %>, <%=esType %>)
-    				.setSource(json));
+    				.setSource(json<%=cid %>));
 }else{
-	bulkRequest<%=cid %>.add(esClient<%=cid %>.prepareIndex(<%=esIndex %>, <%=esType %>, key)
-    				.setSource(json));
+	bulkRequest<%=cid %>.add(esClient<%=cid %>.prepareIndex(<%=esIndex %>, <%=esType %>, key<%=cid %>)
+    				.setSource(json<%=cid %>));
 }
 bulkRequestsSize<%=cid %>++;    	
 nb_line_<%=cid %>++;			
 if(bulkRequestsSize<%=cid %> == <%=esBatchSize%>){
-    org.elasticsearch.action.bulk.BulkResponse response = bulkRequest<%=cid %>.execute().actionGet();
-    if(response.hasFailures()){
-    	
+    org.elasticsearch.action.bulk.BulkResponse response<%=cid %> = bulkRequest<%=cid %>.execute().actionGet();
+    if(response<%=cid %>.hasFailures() && <%=dieError %>){
+    	throw new RuntimeException("Exception Indexing Bulk: " + response<%=cid %>.buildFailureMessage());
     }
     bulkRequest<%=cid %> = esClient<%=cid %>.prepareBulk();	
     bulkRequestsSize<%=cid %> = 0;

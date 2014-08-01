@@ -32,8 +32,8 @@
 	String esClusterName = ElementParameterParser.getValue(node, "__ES_CLUSTER__");
 %>
 
-org.elasticsearch.common.settings.Settings settings = org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder().put("cluster.name" , <%=esClusterName%>).build();
-org.elasticsearch.client.Client esClient<%=cid %> = new org.elasticsearch.client.transport.TransportClient(settings)
+org.elasticsearch.common.settings.Settings settings<%=cid %> = org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder().put("cluster.name" , <%=esClusterName%>).build();
+org.elasticsearch.client.Client esClient<%=cid %> = new org.elasticsearch.client.transport.TransportClient(settings<%=cid %>)
         	.addTransportAddress(new org.elasticsearch.common.transport.InetSocketTransportAddress(<%=esClientHost%>, Integer.valueOf(<%=esClientPort%>)));
         	
 int bulkRequestsSize<%=cid %> = 0;

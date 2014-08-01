@@ -26,8 +26,8 @@ if (metadatas != null && metadatas.size() > 0) {
   <%}
 }%>
 if(bulkRequestsSize<%=cid %> > 0){
-    org.elasticsearch.action.bulk.BulkResponse response = bulkRequest<%=cid %>.execute().actionGet();
-    if(response.hasFailures()){
+    org.elasticsearch.action.bulk.BulkResponse response<%=cid %> = bulkRequest<%=cid %>.execute().actionGet();
+    if(response<%=cid %>.hasFailures()){
     		
     }
 }
