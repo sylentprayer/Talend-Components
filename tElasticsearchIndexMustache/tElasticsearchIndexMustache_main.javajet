@@ -1,0 +1,97 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map		
+	" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+	
+String esIndex = ElementParameterParser.getValue(node, "__ES_INDEX__");
+String esType = ElementParameterParser.getValue(node, "__ES_TYPE__");
+String esBatchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+
+Boolean verboseConsole = new Boolean(ElementParameterParser.getValue(node, "__VERBOSE_INDEXING__"));  
+Boolean dieError = new Boolean(ElementParameterParser.getValue(node, "__DIE_ERROR__"));  
+
+%>
+String key<%=cid %>="";
+String json<%=cid %>="";
+java.util.Map<String, Object> request<%=cid %> = new java.util.HashMap<String, Object>();
+<%
+
+List<IMetadataColumn> columns = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+IMetadataTable metadata = null;
+if ((metadatas != null) && (metadatas.size() > 0)) {
+  metadata = metadatas.get(0);
+  if (metadata != null) {
+    columns = metadata.getListColumns();        
+  }
+}
+
+List< ? extends IConnection> conns = node.getIncomingConnections();
+if(conns!=null){
+	if (conns.size()>0){
+		IConnection conn =conns.get(0);
+        if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            int sizeColumns = columns.size();
+            
+            for (int i = 0; i < sizeColumns; i++) {
+                IMetadataColumn column = columns.get(i);
+                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                //TODO type conversion
+				
+                if(column.isKey()){
+				%>
+                	key<%=cid %>+=<%=conn.getName()%>.<%=column.getLabel()%>;
+				<%
+                } 
+                
+				%>
+				request<%=cid %>.put("<%=column.getLabel()%>",  <%=conn.getName()%>.<%=column.getLabel()%> );
+				<%
+            }
+            %>
+            	json<%=cid %> = template<%=cid%>.execute(request<%=cid %>);
+           <%
+        }
+    }
+}
+
+%>
+
+if(key<%=cid %>.isEmpty()){
+	bulkRequest<%=cid %>.add(esClient<%=cid %>.prepareIndex(<%=esIndex %>, <%=esType %>)
+    				.setSource(json<%=cid %>));
+}else{
+	bulkRequest<%=cid %>.add(esClient<%=cid %>.prepareIndex(<%=esIndex %>, <%=esType %>, key<%=cid %>)
+    				.setSource(json<%=cid %>));
+}
+bulkRequestsSize<%=cid %>++;    	
+nb_line_<%=cid %>++;			
+if(bulkRequestsSize<%=cid %> == <%=esBatchSize%>){
+    org.elasticsearch.action.bulk.BulkResponse response<%=cid %> = bulkRequest<%=cid %>.execute().actionGet();
+    if(response<%=cid %>.hasFailures() && <%=dieError %>){
+    	throw new RuntimeException("Exception Indexing Bulk: " + response<%=cid %>.buildFailureMessage());
+    }
+    bulkRequest<%=cid %> = esClient<%=cid %>.prepareBulk();	
+    bulkRequestsSize<%=cid %> = 0;
+    
+    if( <%=verboseConsole %> ) {
+    	System.out.println("Indexed requests");
+    }
+}

@@ -1,0 +1,59 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map	
+    	java.util.ArrayList 
+    	java.util.HashMap	
+        java.io.ByteArrayInputStream
+        java.io.BufferedReader
+        java.io.ByteArrayOutputStream
+        java.io.FileReader
+        java.io.InputStream
+        java.io.InputStreamReader     
+	" 
+%>
+
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+    
+    String esClientHost = ElementParameterParser.getValue(node, "__ES_HOST__");
+	String esClientPort = ElementParameterParser.getValue(node, "__ES_PORT__");
+	String esClusterName = ElementParameterParser.getValue(node, "__ES_CLUSTER__");
+	String template = ElementParameterParser.getValue(node, "__TEMPLATE__");
+	
+	template=template.replaceAll("\r|\n","").replaceAll("\"","\\\\\"");
+	if(!template.startsWith("\"")){
+		template="\""+template;
+	}
+	if(!template.endsWith("\"")){
+		template=template+"\"";
+	}
+%>
+
+org.elasticsearch.common.settings.Settings settings<%=cid %> = org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder().put("cluster.name" , <%=esClusterName%>).build();
+org.elasticsearch.client.Client esClient<%=cid %> = new org.elasticsearch.client.transport.TransportClient(settings<%=cid %>)
+        	.addTransportAddress(new org.elasticsearch.common.transport.InetSocketTransportAddress(<%=esClientHost%>, Integer.valueOf(<%=esClientPort%>)));
+        	
+int bulkRequestsSize<%=cid %> = 0;
+org.elasticsearch.action.bulk.BulkRequestBuilder bulkRequest<%=cid %> = esClient<%=cid %>.prepareBulk();
+
+com.samskivert.mustache.Template template<%=cid%> = com.samskivert.mustache.Mustache.compiler().compile(<%=template%>);
+
+int nb_line_<%=cid %> = 0;
+
+
+
+
+
+
