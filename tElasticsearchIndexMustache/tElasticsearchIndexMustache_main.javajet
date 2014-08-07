@@ -24,6 +24,7 @@ String esIndex = ElementParameterParser.getValue(node, "__ES_INDEX__");
 String esType = ElementParameterParser.getValue(node, "__ES_TYPE__");
 String esBatchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 
+Boolean printRequests = new Boolean(ElementParameterParser.getValue(node, "__PRINT_REQUESTS__"));  
 Boolean verboseConsole = new Boolean(ElementParameterParser.getValue(node, "__VERBOSE_INDEXING__"));  
 Boolean dieError = new Boolean(ElementParameterParser.getValue(node, "__DIE_ERROR__"));  
 
@@ -67,6 +68,10 @@ if(conns!=null){
             }
             %>
             	json<%=cid %> = template<%=cid%>.execute(request<%=cid %>);
+            	if(<%=printRequests %>)
+            	{
+            		System.out.println(json<%=cid %>);
+            	}
            <%
         }
     }
