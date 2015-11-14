@@ -26,16 +26,36 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
-    
     String esClientHost = ElementParameterParser.getValue(node, "__ES_HOST__");
 	String esClientPort = ElementParameterParser.getValue(node, "__ES_PORT__");
 	String esClusterName = ElementParameterParser.getValue(node, "__ES_CLUSTER__");
 %>
 
-org.elasticsearch.common.settings.Settings settings<%=cid %> = org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder().put("cluster.name" , <%=esClusterName%>).build();
-org.elasticsearch.client.Client esClient<%=cid %> = new org.elasticsearch.client.transport.TransportClient(settings<%=cid %>)
-        	.addTransportAddress(new org.elasticsearch.common.transport.InetSocketTransportAddress(<%=esClientHost%>, Integer.valueOf(<%=esClientPort%>)));
-        	
+
+	org.elasticsearch.common.settings.Settings settings<%=cid %> = null;
+	org.elasticsearch.client.Client esClient<%=cid %> = null;
+<%
+	try {
+		Class.forName("org.elasticsearch.common.settings.ImmutableSettings");
+
+%>
+	settings<%=cid %> = org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder().put("cluster.name" , <%=esClusterName%>).build();
+    		esClient<%=cid %> = new org.elasticsearch.client.transport.TransportClient(settings<%=cid %>)
+    				.addTransportAddress(new org.elasticsearch.common.transport.InetSocketTransportAddress(<%=esClientHost%>, Integer.valueOf(<%=esClientPort%>)));
+<%
+	} catch (ClassNotFoundException e) {
+%>
+        try{
+            settings<%=cid %> = org.elasticsearch.common.settings.Settings.settingsBuilder().put("cluster.name" , <%=esClusterName%>).build();
+            esClient<%=cid %> = org.elasticsearch.client.transport.TransportClient.builder().settings(settings<%=cid %>).build()
+                    .addTransportAddress(new org.elasticsearch.common.transport.InetSocketTransportAddress(java.net.InetAddress.getByName(<%=esClientHost%>), Integer.valueOf(<%=esClientPort%>)));
+
+        } catch (Exception e){
+
+        }
+<%
+	}
+%>
 int bulkRequestsSize<%=cid %> = 0;
 int nb_line_<%=cid %> = 0;
 org.elasticsearch.action.bulk.BulkRequestBuilder bulkRequest<%=cid %> = esClient<%=cid %>.prepareBulk();
